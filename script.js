@@ -75,7 +75,8 @@ function renderTable(data) {
   tableBody.innerHTML = "";
 
   if (data.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">Data tidak ditemukan</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">Data tidak ditemukan</td></tr>`;
+    hitungIpkWeb();
     return;
   }
 
@@ -87,6 +88,9 @@ function renderTable(data) {
       <td>${item.sks}</td>
       <td><span class="badge ${getBadgeClass(item.nilai)}">${item.nilai}</span></td>
       <td>${item.bobot.toFixed(1)}</td>
+      <td>
+        <button class="btn btn-sm btn-danger" onclick="hapusData(${item.id})">Hapus</button>
+      </td>
     `;
     tableBody.appendChild(row);
   });
@@ -116,6 +120,7 @@ function hitungIpkWeb() {
   ipkValueEl.textContent = ipk;
 }
 
+// Fitur Pencarian / Filter (Event 1)
 searchInput.addEventListener("input", function (e) {
   const keyword = e.target.value.toLowerCase().trim();
 
@@ -130,10 +135,13 @@ searchInput.addEventListener("input", function (e) {
   renderTable(filteredData);
 });
 
-toggleBtn.addEventListener("click", function () {
-  summaryCard.classList.toggle("d-none");
+// Fitur jQuery untuk efek Animasi Slide (Penggunaan jQuery Poin 3)
+$(document).ready(function() {$("#toggleSummaryBtn").on("click", function() {
+    $("#summaryCard").slideToggle(300);
+  });
 });
 
+// Fitur Tambah Data & Validasi Form (Event 2)
 formNilai.addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -182,5 +190,13 @@ formNilai.addEventListener("submit", function (e) {
     hitungRataRataNilaiConsole();
   }
 });
+
+// Fitur Hapus Data (Event 3)
+function hapusData(id) {
+  daftarNilai = daftarNilai.filter(item => item.id !== id);
+  renderTable(daftarNilai);
+  console.log("\n=== DATA DIHAPUS ===");
+  hitungRataRataNilaiConsole();
+}
 
 renderTable(daftarNilai);
